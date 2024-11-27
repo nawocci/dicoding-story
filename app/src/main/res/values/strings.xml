@@ -2,4 +2,9 @@
     <string name="app_name">Dicoding Story</string>
     <string name="action_logout">Logout</string>
     <string name="home_fragment_label">Home</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="register_button">Register</string>
+    <string name="name_hint">Name</string>
 </resources>
