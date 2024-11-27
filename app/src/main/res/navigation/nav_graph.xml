@@ -38,4 +38,14 @@
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.dicoding.dicodingstory.DetailFragment"
+        android:label="Detail"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="storyId"
+            app:argType="string" />
+    </fragment>
 </navigation>

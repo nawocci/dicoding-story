@@ -1,10 +1,12 @@
 package com.dicoding.dicodingstory
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dicoding.dicodingstory.model.Story
@@ -25,6 +27,13 @@ class StoryAdapter(private val stories: List<Story>) : RecyclerView.Adapter<Stor
         val story = stories[position]
         holder.nameTextView.text = story.name
         Glide.with(holder.itemView.context).load(story.photoUrl).into(holder.photoImageView)
+
+        holder.itemView.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("storyId", story.id)
+            }
+            it.findNavController().navigate(R.id.detailFragment, bundle)
+        }
     }
 
     override fun getItemCount(): Int = stories.size

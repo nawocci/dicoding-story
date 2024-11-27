@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.dicodingstory.api.ApiClient
-import com.dicoding.dicodingstory.api.StoryResponse
+import com.dicoding.dicodingstory.api.StoriesResponse
 import com.dicoding.dicodingstory.databinding.FragmentHomeBinding
 import com.dicoding.dicodingstory.model.Story
 import retrofit2.Call
@@ -51,8 +51,8 @@ class HomeFragment : Fragment() {
 
         if (token != null) {
             binding.loadingProgressBar.visibility = View.VISIBLE
-            ApiClient.apiService.getStories("Bearer $token").enqueue(object : Callback<StoryResponse> {
-                override fun onResponse(call: Call<StoryResponse>, response: Response<StoryResponse>) {
+            ApiClient.apiService.getStories("Bearer $token").enqueue(object : Callback<StoriesResponse> {
+                override fun onResponse(call: Call<StoriesResponse>, response: Response<StoriesResponse>) {
                     binding.loadingProgressBar.visibility = View.GONE
                     if (response.isSuccessful && response.body() != null) {
                         storyList.clear()
@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
+                override fun onFailure(call: Call<StoriesResponse>, t: Throwable) {
                     binding.loadingProgressBar.visibility = View.GONE
                     Log.e("HomeFragment", "Failed to fetch stories", t)
                     Toast.makeText(context, "Failed to fetch stories", Toast.LENGTH_SHORT).show()
