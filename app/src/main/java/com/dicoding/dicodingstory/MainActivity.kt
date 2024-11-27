@@ -3,6 +3,7 @@ package com.dicoding.dicodingstory
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -29,6 +30,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener { view ->
             Toast.makeText(this, "FAB clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.loginFragment, R.id.registerFragment -> {
+                    binding.toolbar.visibility = View.GONE
+                    binding.fab.visibility = View.GONE
+                }
+                else -> {
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.fab.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
