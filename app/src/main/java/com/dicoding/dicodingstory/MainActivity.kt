@@ -50,10 +50,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.loginFragment, R.id.registerFragment -> {
                     binding.toolbar.visibility = View.GONE
                     binding.fab.visibility = View.GONE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                }
+                R.id.homeFragment -> {
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.fab.visibility = View.VISIBLE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
                 else -> {
                     binding.toolbar.visibility = View.VISIBLE
                     binding.fab.visibility = View.VISIBLE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 }
             }
         }
@@ -67,15 +74,38 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_logout -> {
-                Toast.makeText(this, "Logout action clicked", Toast.LENGTH_SHORT).show()
+                logoutUser()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    private fun logoutUser() {
+        // Clear user data from shared preferences
+        val sharedPreferences: SharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear() // Clear all data
+        editor.apply()
+
+        // Navigate to loginFragment and clear the back stack
+        findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_homeFragment_to_loginFragment)
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        if (navController.currentDestination?.id == R.id.homeFragment) {
+            // Allow back navigation to exit the app or go to the app drawer
+            finish() // Close the app
+        } else {
+            // Default behavior for other fragments
+            super.onBackPressed()
+        }
     }
 }
