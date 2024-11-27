@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -56,8 +57,13 @@ class LoginFragment : Fragment() {
 
     private fun loginUser(email: String, password: String) {
         val request = LoginRequest(email, password)
+        val loadingProgressBar: ProgressBar = requireView().findViewById(R.id.loadingProgressBar)
+        
+        loadingProgressBar.visibility = View.VISIBLE // Show loading
+
         ApiClient.apiService.login(request).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                loadingProgressBar.visibility = View.GONE // Hide loading
                 if (response.isSuccessful && response.body() != null) {
                     val loginResult = response.body()!!.loginResult
                     saveUserData(loginResult.userId, loginResult.token)
@@ -69,6 +75,7 @@ class LoginFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                loadingProgressBar.visibility = View.GONE // Hide loading
                 handleError("Network error: ${t.message}")
             }
         })

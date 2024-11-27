@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -54,8 +55,13 @@ class RegisterFragment : Fragment() {
 
     private fun registerUser(name: String, email: String, password: String) {
         val request = RegisterRequest(name, email, password)
+        val loadingProgressBar: ProgressBar = requireView().findViewById(R.id.loadingProgressBar)
+        
+        loadingProgressBar.visibility = View.VISIBLE // Show loading
+
         ApiClient.apiService.register(request).enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                loadingProgressBar.visibility = View.GONE // Hide loading
                 if (response.isSuccessful && response.body() != null) {
                     if (!response.body()!!.error) {
                         Toast.makeText(requireContext(), response.body()!!.message, Toast.LENGTH_SHORT).show()
@@ -69,6 +75,7 @@ class RegisterFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                loadingProgressBar.visibility = View.GONE // Hide loading
                 handleError("Network error: ${t.message}")
             }
         })
