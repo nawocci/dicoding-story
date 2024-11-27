@@ -1,5 +1,6 @@
 package com.dicoding.dicodingstory
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.dicoding.dicodingstory.api.ApiClient
+import com.dicoding.dicodingstory.api.RegisterRequest
+import com.dicoding.dicodingstory.api.RegisterResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RegisterFragment : Fragment() {
 
@@ -35,12 +42,39 @@ class RegisterFragment : Fragment() {
 
             if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            } else if (password.length < 8) {
+                Toast.makeText(requireContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                registerUser(name, email, password)
             }
         }
 
         return view
+    }
+
+    private fun registerUser(name: String, email: String, password: String) {
+        val request = RegisterRequest(name, email, password)
+        ApiClient.apiService.register(request).enqueue(object : Callback<RegisterResponse> {
+            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    if (!response.body()!!.error) {
+                        Toast.makeText(requireContext(), response.body()!!.message, Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                    } else {
+                        handleError(response.body()!!.message)
+                    }
+                } else {
+                    handleError("Registration failed. Please try again.")
+                }
+            }
+
+            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                handleError("Network error: ${t.message}")
+            }
+        })
+    }
+
+    private fun handleError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 } 

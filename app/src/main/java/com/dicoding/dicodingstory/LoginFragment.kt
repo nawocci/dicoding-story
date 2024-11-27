@@ -1,5 +1,7 @@
 package com.dicoding.dicodingstory
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.dicoding.dicodingstory.api.ApiClient
+import com.dicoding.dicodingstory.api.LoginRequest
+import com.dicoding.dicodingstory.api.LoginResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginFragment : Fragment() {
 
@@ -33,11 +41,9 @@ class LoginFragment : Fragment() {
             val password = passwordEditText.text.toString()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                handleError("Please fill in all fields")
             } else {
-                // Handle login logic here (e.g., validate credentials)
-                Toast.makeText(requireContext(), "Login successful", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                loginUser(email, password)
             }
         }
 
@@ -46,5 +52,37 @@ class LoginFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun loginUser(email: String, password: String) {
+        val request = LoginRequest(email, password)
+        ApiClient.apiService.login(request).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val loginResult = response.body()!!.loginResult
+                    saveUserData(loginResult.userId, loginResult.token)
+                    Toast.makeText(requireContext(), "Login successful", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                } else {
+                    handleError("Login failed. Please check your credentials.")
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                handleError("Network error: ${t.message}")
+            }
+        })
+    }
+
+    private fun saveUserData(userId: String, token: String) {
+        val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("userId", userId)
+        editor.putString("token", token)
+        editor.apply()
+    }
+
+    private fun handleError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 } 

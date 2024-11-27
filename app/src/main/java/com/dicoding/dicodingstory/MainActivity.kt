@@ -1,5 +1,7 @@
 package com.dicoding.dicodingstory
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -21,6 +23,17 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val sharedPreferences: SharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("token", null)
+
+        if (token != null) {
+            // Navigate to homeFragment directly if token exists
+            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.homeFragment)
+        } else {
+            // Navigate to loginFragment if no token
+            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.loginFragment)
+        }
 
         setSupportActionBar(binding.toolbar)
 
