@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
-            Toast.makeText(this, "FAB clicked", Toast.LENGTH_SHORT).show()
+            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.addStoryFragment)
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->

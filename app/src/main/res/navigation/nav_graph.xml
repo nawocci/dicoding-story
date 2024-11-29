@@ -48,4 +48,10 @@
             android:name="storyId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/addStoryFragment"
+        android:name="com.dicoding.dicodingstory.AddStoryFragment"
+        android:label="Add Story"
+        tools:layout="@layout/fragment_add_story" />
 </navigation>

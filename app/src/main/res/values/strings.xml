@@ -9,4 +9,5 @@
     <string name="name_hint">Name</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="add_image">Add Image</string>
 </resources>
