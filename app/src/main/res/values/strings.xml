@@ -10,4 +10,5 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="add_image">Add Image</string>
+    <string name="maps">Maps</string>
 </resources>

@@ -53,4 +53,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.glide)
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 }

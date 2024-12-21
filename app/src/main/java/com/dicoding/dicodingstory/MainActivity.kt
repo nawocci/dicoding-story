@@ -83,6 +83,10 @@ class MainActivity : AppCompatActivity() {
                 logoutUser()
                 true
             }
+            R.id.action_maps -> {
+                findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.mapsFragment)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

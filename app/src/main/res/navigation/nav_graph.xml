@@ -54,4 +54,10 @@
         android:name="com.dicoding.dicodingstory.AddStoryFragment"
         android:label="Add Story"
         tools:layout="@layout/fragment_add_story" />
+
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.dicoding.dicodingstory.MapsFragment"
+        android:label="Maps"
+        tools:layout="@layout/fragment_maps" />
 </navigation>
