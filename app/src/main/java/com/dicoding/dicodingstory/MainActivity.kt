@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -42,6 +43,11 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
+            // Load the animation
+            val scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale)
+            // Start the animation
+            view.startAnimation(scaleAnimation)
+            // Navigate to addStoryFragment
             findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.addStoryFragment)
         }
 
