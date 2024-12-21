@@ -25,30 +25,26 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPreferences: SharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("token", null)
-
-        if (token != null) {
-            // Navigate to homeFragment directly if token exists
-            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.homeFragment)
-        } else {
-            // Navigate to loginFragment if no token
-            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.loginFragment)
-        }
-
         setSupportActionBar(binding.toolbar)
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        // Check token after navigation setup
+        val sharedPreferences: SharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("token", null)
+
+        // Only navigate if this is the first creation
+        if (savedInstanceState == null) {
+            val startDestination = if (token != null) R.id.homeFragment else R.id.loginFragment
+            navController.navigate(startDestination)
+        }
+
         binding.fab.setOnClickListener { view ->
-            // Load the animation
             val scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale)
-            // Start the animation
             view.startAnimation(scaleAnimation)
-            // Navigate to addStoryFragment
-            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.addStoryFragment)
+            navController.navigate(R.id.addStoryFragment)
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->

@@ -54,4 +54,5 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.glide)
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
 }

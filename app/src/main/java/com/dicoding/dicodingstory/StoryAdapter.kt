@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dicoding.dicodingstory.model.Story
 
-class StoryAdapter(private val stories: List<Story>) : RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
+class StoryAdapter : PagingDataAdapter<Story, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
 
     class StoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.tv_item_name)
@@ -24,17 +28,35 @@ class StoryAdapter(private val stories: List<Story>) : RecyclerView.Adapter<Stor
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        val story = stories[position]
-        holder.nameTextView.text = story.name
-        Glide.with(holder.itemView.context).load(story.photoUrl).into(holder.photoImageView)
+        val story = getItem(position)
+        if (story != null) {
+            holder.nameTextView.text = story.name
+            Glide.with(holder.itemView.context)
+                .load(story.photoUrl)
+                .placeholder(R.drawable.image_placeholder)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .override(300, 300)
+                .into(holder.photoImageView)
 
-        holder.itemView.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("storyId", story.id)
+            holder.itemView.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putString("storyId", story.id)
+                }
+                it.findNavController().navigate(R.id.detailFragment, bundle)
             }
-            it.findNavController().navigate(R.id.detailFragment, bundle)
         }
     }
 
-    override fun getItemCount(): Int = stories.size
+    companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Story>() {
+            override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }
