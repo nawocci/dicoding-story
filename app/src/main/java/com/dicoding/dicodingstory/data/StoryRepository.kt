@@ -8,7 +8,7 @@ import androidx.paging.liveData
 import com.dicoding.dicodingstory.api.ApiService
 import com.dicoding.dicodingstory.model.Story
 
-class StoryRepository(private val apiService: ApiService) {
+open class StoryRepository(private val apiService: ApiService) {
     fun getStories(token: String): LiveData<PagingData<Story>> {
         return Pager(
             config = PagingConfig(

@@ -36,6 +36,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -55,4 +58,21 @@ dependencies {
     implementation(libs.glide)
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    // AndroidX Test - Core library
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+
+    // Mockito for mocking
+    testImplementation("org.mockito:mockito-core:4.0.0")
+    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation("org.mockito:mockito-android:4.0.0")
+
+    // Coroutines Test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
+
+    // Paging
+    implementation("androidx.paging:paging-runtime:3.1.0")
+    testImplementation("androidx.paging:paging-common:3.1.0")
+
+    // JUnit
+    testImplementation("junit:junit:4.13.2")
 }
